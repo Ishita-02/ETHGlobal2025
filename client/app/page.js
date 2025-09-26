@@ -1,26 +1,35 @@
+"use client"
+
 import Link from "next/link";
 import MacbookScroll from "@/components/ui/macbook-scroll";
 import hot from "@/assets/hot.jpeg";
 import Nav from "@/components/Nav";
+import { useMobileNav } from "@/zustand/mobileNav";
 
 export default function Home() {
+
+    const phoneView = useMobileNav((set) => set.mobileNav)
+  const turnMobileViewOn = useMobileNav((state) => state.turnMobileOn)
   return (
+  
     <div>
       <Nav />
-      <div className="animate-stamp">
+
+      { !phoneView ? <div>
+      <div className="animate-stamp mt-5">
         <div className="flex justify-center">
           <div className="md:w-[800px] w-[300px] md:text-5xl tracking-wide text-gray-700 mt-40 flex flex-col">
-            <div className="text-center md:text-6xl text-4xl mb-3">
-              K2K is Knowledge to Knowledge.
+            <div className="text-center md:text-6xl text-4xl mb-5">
+             Sell & buy real-estate in a new innovative way known as goodwill.
             </div>
             <div className="text-center text-xl">
-              a platform that connects people with the best resources, knowledge, and expertise.
+              a platform that helps you win as a real estate owner.
             </div>
           </div>
         </div>
 
         <div className="flex justify-center mt-5 text-gray-400 text-md md:text-lg">
-          barter skills. save money. avoid loneliness.
+          buy. sell. on your goodwill.
         </div>
 
         <div className="flex justify-center space-x-10 mt-10">
@@ -43,13 +52,13 @@ export default function Home() {
 
       <div className="flex justify-center items-center mt-100 md:mt-150">
         <div className="flex flex-col">
-          <div className="flex flex-col md:flex-row items-center md:justify-center text-3xl md:text-5xl space-x-2">
+          <div className="flex flex-col md:flex-row items-center md:justify-center text-3xl md:text-5xl space-x-3">
             <div>Revolutionizing</div>
-            <div className="text-orange-500">Internet Learning</div>
+            <div className="text-orange-500">real-estate trade</div>
           </div>
 
           <div className="text-center w-75 md:w-200 mt-5 md:text-3xl text-2xl text-gray-500 md:mb-30 mb-50">
-            Experience the future of internet learning. Make meaningful connections & get addicted to knowledge.
+            Experience the future of real estate trading. A win win for both the buyer and the seller.
           </div>
         </div>
       </div>
@@ -73,9 +82,9 @@ export default function Home() {
               fill="#ff8f33"
             />
           </svg>
-          <div className="text-xl">Public Posts</div>
-          <div className="text-center text-xl w-70 text-gray-500">
-            Explore what people are doing through their public posts & share your thoughts.
+          <div className="text-xl">Tokenize</div>
+          <div className="text-center text-xl md:w-90 w-68 text-gray-500">
+            On our platform you can tokenize your real estate easily.
           </div>
         </div>
 
@@ -120,9 +129,9 @@ export default function Home() {
               strokeLinejoin="round"
             />
           </svg>
-          <div className="text-xl">Offers</div>
-          <div className="text-center text-xl w-70 text-gray-500">
-            Explore and post what you people and you have to offer in terms of knowledge and skills.
+          <div className="text-xl">Sell</div>
+          <div className="text-center text-xl md:w-90 w-68  text-gray-500">
+            Sell your asset on goodwill basis and win regardless the situation.
           </div>
         </div>
 
@@ -163,35 +172,12 @@ export default function Home() {
               strokeLinecap="round"
             />
           </svg>
-          <div className="text-xl">Proposals.</div>
-          <div className="text-center text-xl w-70 text-gray-500">
-            Propose an offer to a people about a particular offer. Wait patiently for their response.
+          <div className="text-xl">Buy</div>
+          <div className="text-center text-xl md:w-90 w-68  text-gray-500">
+           Buy goodwill properties you're super bullish on.
           </div>
         </div>
 
-        {/* Messages */}
-        <div className="flex flex-col items-center p-6 hover:border-gray-300 space-y-5 border-2 rounded-md border-gray-200">
-          <svg
-            width="32px"
-            height="32px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            color="#ff8f33"
-            strokeWidth="1.5"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M2.25 5C2.25 3.48122 3.48122 2.25 5 2.25H19C20.5188 2.25 21.75 3.48122 21.75 5V15C21.75 16.5188 20.5188 17.75 19 17.75H7.96125C7.58154 17.75 7.2224 17.9226 6.98516 18.2191L4.65418 21.1328C3.85702 22.1293 2.25 21.5657 2.25 20.2895V5Z"
-              fill="#ff8f33"
-            />
-          </svg>
-          <div className="text-xl">Messages.</div>
-          <div className="text-center text-xl w-70 text-gray-500">
-            Talk to people about anything. Share ideas, socials, and build connections.
-          </div>
-        </div>
       </div>
 
       <div className="flex justify-center space-x-2 items-center md:text-4xl tracking-widest text-2xl md:mt-30 mt-50">
@@ -201,7 +187,7 @@ export default function Home() {
 
       <div className="flex justify-center items-center mt-5">
         <div className="flex justify-center items-center text-center md:text-3xl text-gray-400 md:w-150 w-85 text-xl">
-          Join K2K and start learning and building with strangers who share your interests.
+          Join Novilized as a first mover and see others flocking on this win-win onchain real estate broker.
         </div>
       </div>
 
@@ -282,15 +268,27 @@ export default function Home() {
               />
             </svg>
           </div>
-          <Link href="/">K2K</Link>
+          <Link href="/">Novilized</Link>
         </div>
 
         <div className="text-gray-400 flex space-x-5">
           <div>Privacy Policy</div>
           <div>Terms of Service</div>
-          <div>© 2025 K2K. All rights reserved.</div>
+          <div>© 2025 Novilized. All rights reserved.</div>
         </div>
       </div>
+      </div>
+      : <div className='mt-30 ml-4 flex flex-col space-y-10 text-2xl text-gray-500'>
+
+            <Link href="/" onClick={() => turnMobileViewOn(!phoneView)}> home </Link>
+            <Link href="/qr" onClick={() => turnMobileViewOn(!phoneView)}> qr </Link>
+            <Link href="/something" onClick={() => turnMobileViewOn(!phoneView)}> something</Link>
+           
+             
+             
+             
+             </div>}
     </div>
   );
 }
+
