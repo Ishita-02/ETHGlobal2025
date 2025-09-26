@@ -9,6 +9,15 @@ import "./IdentityManager.sol";
 
 contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
+    event TokensSold(
+        address indexed propertyToken,
+        address indexed seller,
+        address indexed buyer,
+        uint256 numTokens,
+        uint256 totalPrice,
+        uint256 goodwillAmount
+    );
+
     IdentityManager public immutable identityManager;
     struct Property {
         uint256 price;
@@ -151,5 +160,57 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
 
     // sell function
-    
+    function sellTokens(address propertyToken, uint256 numTokens) external payable nonReentrant {
+        require(identityManager.isVerified(msg.sender), "User not verified");
+        Property storage property = properties[propertyToken];
+        require(property.isListed, "Property not listed");
+
+        address seller = property.seller;
+        address buyer = msg.sender;
+        require(buyer != seller, "Cannot buy own property");
+
+        IToken token = IToken(propertyToken);
+        require(token.balanceOf(seller) >= numTokens, "Seller has insufficient tokens");
+
+        uint256 fullTotalPrice = property.price * numTokens;
+        uint256 salePrice = fullTotalPrice;
+        uint256 goodwillAmount = 0;
+
+        if (property.isGoodwillSale) {
+            salePrice = (fullTotalPrice * (100 - GOODWILL_PERCENTAGE)) / 100;
+        }
+
+        require(msg.value == salePrice, "Incorrect payment amount");
+
+        if (property.goodwillBeneficiary != address(0)) {
+            goodwillAmount = (fullTotalPrice * GOODWILL_PERCENTAGE) / 100;
+            (bool goodwillSent,) = property.goodwillBeneficiary.call{value: goodwillAmount}("");
+            require(goodwillSent, "Goodwill payment failed");
+        }
+
+        uint256 sellerProceeds = salePrice - goodwillAmount;
+        if (sellerProceeds > 0) {
+             (bool sent,) = seller.call{value: sellerProceeds}("");
+             require(sent, "Payment transfer failed");
+        }
+
+        require(token.transferFrom(seller, buyer, numTokens), "Token transfer failed");
+
+        property.isListed = false; // Conclude this listing after the partial sale.
+
+        if (property.isGoodwillSale) {
+            property.goodwillBeneficiary = seller;
+        } else {
+            property.goodwillBeneficiary = address(0);
+        }
+
+        emit TokensSold(
+            propertyToken,
+            seller,
+            buyer,
+            numTokens,
+            salePrice,
+            goodwillAmount
+        );
+    }
 }
