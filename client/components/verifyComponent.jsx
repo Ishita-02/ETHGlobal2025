@@ -5,7 +5,7 @@ import { countries, SelfQRcodeWrapper } from '@selfxyz/qrcode';
 import { SelfAppBuilder } from '@selfxyz/qrcode';
 
 export default function VerifyComponent() {
-  const [selfApp, setSelfApp] = useState<any | null>(null);
+  const [selfApp, setSelfApp] = useState(null);
 
   useEffect(() => {
     const userId = '0xDC984157F54F2e186cb6E9082bb998CbE7C44c23'; // Replace with actual address
