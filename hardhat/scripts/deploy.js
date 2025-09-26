@@ -14,20 +14,20 @@ async function main() {
     console.log("IdentityManager deployed to:", identityManagerAddress);
 
     // 2. Deploy PropertyToken with exact constructor parameters
-    console.log("\nDeploying PropertyToken...");
-    const PropertyToken = await ethers.getContractFactory("PropertyToken");
-    const propertyToken = await PropertyToken.deploy(
-      "Property Token",       // _name
-      "PROP",                // _symbol
-      "PROP123",             // _propertyId
-      "123 Main St",         // _location
-      ethers.parseEther("1000000"), // _price
-      deployer.address,      // _owner
-      identityManagerAddress // _identityManager
-    );
-    await propertyToken.waitForDeployment();
-    const propertyTokenAddress = await propertyToken.getAddress();
-    console.log("PropertyToken deployed to:", propertyTokenAddress);
+    // console.log("\nDeploying PropertyToken...");
+    // const PropertyToken = await ethers.getContractFactory("PropertyToken");
+    // const propertyToken = await PropertyToken.deploy(
+    //   "Property Token",       // _name
+    //   "PROP",                // _symbol
+    //   "PROP123",             // _propertyId
+    //   "123 Main St",         // _location
+    //   ethers.parseEther("1000000"), // _price
+    //   deployer.address,      // _owner
+    //   identityManagerAddress // _identityManager
+    // );
+    // await propertyToken.waitForDeployment();
+    // const propertyTokenAddress = await propertyToken.getAddress();
+    // console.log("PropertyToken deployed to:", propertyTokenAddress);
 
     // 3. Deploy PropertyMarketplace
     console.log("\nDeploying PropertyMarketplace...");
