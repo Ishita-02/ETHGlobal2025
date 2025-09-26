@@ -3,12 +3,17 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@tokenysolutions/t-rex/contracts/token/IToken.sol";
 
 import "./IdentityManager.sol";
 
+interface IERC20 {
+        function balanceOf(address account) external view returns (uint256);
+        function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    }
+
 contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
+    
     event TokensSold(
         address indexed propertyToken,
         address indexed seller,
@@ -56,13 +61,13 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         address propertyToken,
         uint256 price,
         bool isGoodwillSale,
-        string dataURI
+        string memory dataURI
     ) external {
         require(identityManager.isUserVerified(msg.sender), "User not verified");
         require(price > 0, "Invalid price");
         require(!properties[propertyToken].isListed, "Already listed");
         
-        IToken token = IToken(propertyToken);
+        IERC20 token = IERC20(propertyToken);
         require(
             token.balanceOf(msg.sender) > 0,
             "Must own property tokens"
@@ -91,9 +96,9 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         require(property.isListed, "Property not listed");
         require(msg.sender != property.seller, "Cannot buy own property");
 
-        IToken token = IToken(propertyToken);
+        IERC20 token = IERC20(propertyToken);
         require(
-            token.checkTransferAllowed(property.seller, msg.sender, 1),
+            token.transferFrom(property.seller, msg.sender, 1),
             "Transfer not allowed by ERC3643"
         );
 
@@ -161,7 +166,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
     // sell function
     function sellTokens(address propertyToken, uint256 numTokens) external payable nonReentrant {
-        require(identityManager.isVerified(msg.sender), "User not verified");
+        require(identityManager.isUserVerified(msg.sender), "User not verified");
         Property storage property = properties[propertyToken];
         require(property.isListed, "Property not listed");
 
@@ -169,7 +174,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         address buyer = msg.sender;
         require(buyer != seller, "Cannot buy own property");
 
-        IToken token = IToken(propertyToken);
+        IERC20 token = IERC20(propertyToken);
         require(token.balanceOf(seller) >= numTokens, "Seller has insufficient tokens");
 
         uint256 fullTotalPrice = property.price * numTokens;
