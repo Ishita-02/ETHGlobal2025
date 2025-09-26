@@ -90,7 +90,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         );
     }
 
-    function buyProperty(address propertyToken) external payable nonReentrant {
+    function buyProperty(address propertyToken, uint256 numTokens) external payable nonReentrant {
         require(identityManager.isUserVerified(msg.sender), "User not verified");
         Property storage property = properties[propertyToken];
         require(property.isListed, "Property not listed");
@@ -98,11 +98,12 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
         IERC20 token = IERC20(propertyToken);
         require(
-            token.transferFrom(property.seller, msg.sender, 1),
+            token.transferFrom(property.seller, msg.sender, numTokens),
             "Transfer not allowed by ERC3643"
         );
 
-        uint256 salePrice = property.price;
+        uint256 fullTotalPrice = property.price * numTokens;
+        uint256 salePrice = fullTotalPrice;
         uint256 goodwillAmount = 0;
 
         // Calculate prices for goodwill sale
@@ -115,7 +116,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
         // Handle previous goodwill beneficiary payment
         if (property.goodwillBeneficiary != address(0)) {
-            goodwillAmount = (property.price * GOODWILL_PERCENTAGE) / 100;
+            goodwillAmount = (salePrice * GOODWILL_PERCENTAGE) / 100;
             (bool goodwillSent,) = property.goodwillBeneficiary.call{value: goodwillAmount}("");
             require(goodwillSent, "Goodwill payment failed");
         }
@@ -126,13 +127,15 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
         // Transfer property token
         require(
-            token.transferFrom(property.seller, msg.sender, 1),
+            token.transferFrom(property.seller, msg.sender, numTokens),
             "Property transfer failed"
         );
 
         // Update property state
         property.seller = msg.sender;
-        property.isListed = false;
+        if (token.balanceOf(property.seller) == 0) {
+            property.isListed = false; 
+        }
         if (property.isGoodwillSale) {
             property.goodwillBeneficiary = property.seller;
         }
@@ -201,7 +204,10 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
         require(token.transferFrom(seller, buyer, numTokens), "Token transfer failed");
 
-        property.isListed = false; // Conclude this listing after the partial sale.
+        if (token.balanceOf(seller) == 0) {
+            property.isListed = false; 
+        }
+
 
         if (property.isGoodwillSale) {
             property.goodwillBeneficiary = seller;
