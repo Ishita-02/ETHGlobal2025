@@ -1,0 +1,23 @@
+{
+  "name": "be",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@selfxyz/core": "^1.1.0-beta.6",
+    "@selfxyz/qrcode": "^1.0.15",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "ethers": "^6.15.0",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
