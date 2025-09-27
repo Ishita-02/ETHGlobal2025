@@ -59,11 +59,7 @@ const UserPortfolio = () => {
                     </span>
                 </div>
 
-                {isSelling && restriction !== 'none' && (
-                    <div className="mt-2 text-xs text-gray-600 border-t border-orange-300 pt-1 text-center">
-                        only Indians can buy
-                    </div>
-                )}
+              
             </div>
         </div>
     );

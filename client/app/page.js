@@ -3,7 +3,7 @@
 import Link from "next/link";
 import MacbookScroll from "@/components/ui/macbook-scroll";
 import hot from "@/assets/hot.jpeg";
-import Nav from "@/components/Nav";
+
 
 
 export default function Home() {
