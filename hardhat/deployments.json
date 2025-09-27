@@ -1,6 +1,6 @@
 {
-  "identityManager": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-  "marketplace": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-  "network": "hardhat",
-  "timestamp": "2025-09-27T00:22:39.107Z"
+  "identityManager": "0x62b235B76923A6C0521809683Df12A62E5984916",
+  "marketplace": "0x075b7cB0EBe78993b7CD683dfb0177744C12F7a3",
+  "network": "flow_testnet",
+  "timestamp": "2025-09-27T01:04:23.598Z"
 }
