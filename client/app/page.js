@@ -3,19 +3,17 @@
 import Link from "next/link";
 import MacbookScroll from "@/components/ui/macbook-scroll";
 import hot from "@/assets/hot.jpeg";
-import Nav from "@/components/Nav";
-import { useMobileNav } from "@/zustand/mobileNav";
+
+
 
 export default function Home() {
 
-    const phoneView = useMobileNav((set) => set.mobileNav)
-  const turnMobileViewOn = useMobileNav((state) => state.turnMobileOn)
   return (
   
     <div>
-      <Nav />
+     
 
-      { !phoneView ? <div>
+     <div>
       <div className="animate-stamp mt-5">
         <div className="flex justify-center">
           <div className="md:w-[800px] w-[300px] md:text-5xl tracking-wide text-gray-700 mt-40 flex flex-col">
@@ -32,15 +30,15 @@ export default function Home() {
           buy. sell. on your goodwill.
         </div>
 
-        <div className="flex justify-center space-x-10 mt-10">
-          <Link href="/login">
-            <button className="h-11 w-30 bg-orange-500 text-white rounded-lg">
-              Sign up
+        <div className="flex justify-center space-x-6 mt-10">
+          <Link href="/qr">
+            <button className="h-11 w-40 bg-orange-500 text-white rounded-lg">
+              Verify yourself.
             </button>
           </Link>
-          <Link href="/login">
+          <Link href="/marketplace">
             <button className="h-11 w-30 bg-orange-500 text-white rounded-lg">
-              Log in
+              Buy
             </button>
           </Link>
         </div>
@@ -278,16 +276,7 @@ export default function Home() {
         </div>
       </div>
       </div>
-      : <div className='mt-30 ml-4 flex flex-col space-y-10 text-2xl text-gray-500'>
-
-            <Link href="/" onClick={() => turnMobileViewOn(!phoneView)}> home </Link>
-            <Link href="/qr" onClick={() => turnMobileViewOn(!phoneView)}> qr </Link>
-            <Link href="/something" onClick={() => turnMobileViewOn(!phoneView)}> something</Link>
-           
-             
-             
-             
-             </div>}
+    
     </div>
   );
 }
