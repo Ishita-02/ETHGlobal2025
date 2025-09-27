@@ -19,8 +19,6 @@ export default function ClientWrapper({ children }) {
           <Link href="/qr" onClick={() => turnMobileViewOn(false)}> qr </Link>
            <Link href="/sell" onClick={() => turnMobileViewOn(false)}> Listing</Link>
           <Link href="/portfolio" onClick={() => turnMobileViewOn(false)}> Portfolio</Link>
-          
-
         </div>
       )}
     </div>

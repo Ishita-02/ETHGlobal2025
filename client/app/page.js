@@ -3,7 +3,8 @@
 import Link from "next/link";
 import MacbookScroll from "@/components/ui/macbook-scroll";
 import hot from "@/assets/hot.jpeg";
-
+import { ethers } from "ethers";
+import { useEffect, useState } from "react";
 
 
 export default function Home() {
@@ -11,8 +12,6 @@ export default function Home() {
   return (
   
     <div>
-     
-
      <div>
       <div className="animate-stamp mt-5">
         <div className="flex justify-center">

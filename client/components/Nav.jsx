@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link"
 import { useMobileNav } from "@/zustand/mobileNav"
+import ConnectButton from "@/components/WalletConnect/button"
 
 const Nav = () => {
     const turnMobileViewOn = useMobileNav((state) => state.turnMobileOn)
@@ -22,6 +23,10 @@ const Nav = () => {
                     <Link href="/qr" className="hover:text-orange-500">self/qr</Link>
                     <Link href="/sell" className="hover:text-orange-500">Listing </Link>
                     <Link href="/portfolio" className="hover:text-orange-500">Portfolio</Link>
+                </div>
+
+                <div className="md:inline hidden">
+                    <ConnectButton />
                 </div>
 
                 <div className="md:hidden inline">
