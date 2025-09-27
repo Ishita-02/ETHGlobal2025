@@ -4,6 +4,7 @@ import identityManagerABI from '@/app/abis/IdentityManager';
 import propertyMarketplaceABI from '@/app/abis/PropertyMarketplace';
 import propertyTokenABI from '@/app/abis/PropertyToken';
 
+
 class Web3Service {
   constructor() {
 
@@ -21,7 +22,6 @@ class Web3Service {
     this.propertyMarketplace = "0x892289a0cBc5A41e2bD46b462310546cEf46cc97";
 
   }
-
   
   async init() {
     if (typeof window.ethereum !== 'undefined') {
@@ -56,7 +56,7 @@ class Web3Service {
     }
   }
 
-  async connectWallet() {
+   async connectWallet() {
     if (typeof window.ethereum === 'undefined') {
       throw new Error("No Ethereum provider found. Please install MetaMask.");
     }
@@ -316,3 +316,6 @@ class Web3Service {
   }
 
 }
+
+
+export default Web3Service;

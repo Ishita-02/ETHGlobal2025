@@ -3,8 +3,6 @@
 import Link from "next/link";
 import MacbookScroll from "@/components/ui/macbook-scroll";
 import hot from "@/assets/hot.jpeg";
-import { ethers } from "ethers";
-import { useEffect, useState } from "react";
 
 
 export default function Home() {
