@@ -1,4 +1,5 @@
 
+import Nav from "@/components/Nav";
 import "./globals.css";
 
 
@@ -17,9 +18,13 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wght@12..36,300..900&display=swap" rel="stylesheet" />
       </head>
       <body
-        className={` tiktok-sans  antialiased`}
+        className={` tiktok-sans antialiased`}
       >
+        
+         <Nav/>
+         <div className="pt-[100px]">
         {children}
+        </div>
       </body>
     </html>
   );
