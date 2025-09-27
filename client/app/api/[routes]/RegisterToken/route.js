@@ -3,7 +3,7 @@ const Web3 = new Web3Service();
 
 
 export const POST = async (req, res)=>{
-    const {propertyToken, dataUri} = req.query;
+    const {progitpertyToken, dataUri} = req.query;
     try{
         // Send the parameters to the contarct call
         // send image to ipfs 
