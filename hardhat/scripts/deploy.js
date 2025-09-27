@@ -6,12 +6,12 @@ async function main() {
 
   try {
     // 1. Deploy IdentityManager
-    console.log("\nDeploying IdentityManager...");
-    const IdentityManager = await ethers.getContractFactory("IdentityManager");
-    const identityManager = await IdentityManager.deploy();
-    await identityManager.waitForDeployment();
-    const identityManagerAddress = await identityManager.getAddress();
-    console.log("IdentityManager deployed to:", identityManagerAddress);
+    // console.log("\nDeploying IdentityManager...");
+    // const IdentityManager = await ethers.getContractFactory("IdentityManager");
+    // const identityManager = await IdentityManager.deploy();
+    // await identityManager.waitForDeployment();
+    // const identityManagerAddress = await identityManager.getAddress();
+    // console.log("IdentityManager deployed to:", identityManagerAddress);
 
     // 2. Deploy PropertyToken with exact constructor parameters
     // console.log("\nDeploying PropertyToken...");
@@ -28,6 +28,7 @@ async function main() {
     // await propertyToken.waitForDeployment();
     // const propertyTokenAddress = await propertyToken.getAddress();
     // console.log("PropertyToken deployed to:", propertyTokenAddress);
+    const identityManagerAddress = "0x73b0F0bFd958b6F6119dE09A48543B2FB7264369"
 
     // 3. Deploy PropertyMarketplace
     console.log("\nDeploying PropertyMarketplace...");

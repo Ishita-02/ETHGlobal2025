@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@lighthouse-web3/sdk": "^0.4.3",
     "@selfxyz/qrcode": "^1.0.15",
     "@tabler/icons-react": "^3.35.0",
     "clsx": "^2.1.1",

@@ -31,7 +31,8 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         address originalOwner;        // The person who first tokenized the property
         address goodwillBeneficiary; // Current goodwill beneficiary (gets 10% on goodwill resales)
         string dataURI;
-        bool hasGoodwillHistory;     // True if this property was ever sold via goodwill
+        bool hasGoodwillHistory; 
+        string imageURI;    // True if this property was ever sold via goodwill
     }
 
     uint256 private constant GOODWILL_PERCENTAGE = 10;
@@ -89,7 +90,8 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
      */
     function registerProperty(
         address propertyToken,
-        string memory dataURI
+        string memory dataURI,
+        string memory imageURI
     ) external {
         require(identityManager.verifiedUsers(msg.sender), "User not verified");
         require(properties[propertyToken].originalOwner == address(0), "Property already registered");
@@ -101,7 +103,8 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
             originalOwner: msg.sender,
             goodwillBeneficiary: address(0),
             dataURI: dataURI,
-            hasGoodwillHistory: false
+            hasGoodwillHistory: false,
+            imageURI: imageURI
         });
 
         emit PropertyTokenized(propertyToken, msg.sender, dataURI);
