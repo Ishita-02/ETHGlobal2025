@@ -56,8 +56,8 @@ contract PropertyToken is ERC20, Ownable {
     }
 
     function transfer(address to, uint256 amount) public override returns (bool) {
-        require(identityManager.isUserVerified(msg.sender), "Sender not verified");
-        require(identityManager.isUserVerified(to), "Receiver not verified");
+        require(identityManager.verifiedUsers(msg.sender), "Sender not verified");
+        require(identityManager.verifiedUsers(to), "Receiver not verified");
         return super.transfer(to, amount);
     }
 
@@ -66,8 +66,8 @@ contract PropertyToken is ERC20, Ownable {
         address to,
         uint256 amount
     ) public override returns (bool) {
-        require(identityManager.isUserVerified(from), "Sender not verified");
-        require(identityManager.isUserVerified(to), "Receiver not verified");
+        require(identityManager.verifiedUsers(from), "Sender not verified");
+        require(identityManager.verifiedUsers(to), "Receiver not verified");
         return super.transferFrom(from, to, amount);
     }
 

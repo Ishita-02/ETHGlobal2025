@@ -13,7 +13,8 @@ interface IERC20 {
 
 contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
-    
+    enum ListingType { Normal, Goodwill }
+
     event TokensSold(
         address indexed propertyToken,
         address indexed seller,
@@ -28,7 +29,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         uint256 price;
         address seller;
         bool isListed;
-        bool isGoodwillSale;
+        ListingType listingType;
         address goodwillBeneficiary;
         string dataURI;
     }
@@ -42,16 +43,8 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         address indexed propertyToken,
         address indexed seller,
         uint256 price,
-        bool isGoodwillSale
+        ListingType listingType
     );
-    
-    // event PropertySold(
-    //     address indexed propertyToken,
-    //     address indexed seller,
-    //     address indexed buyer,
-    //     uint256 price,
-    //     uint256 goodwillAmount
-    // );
 
     event TokensBought (
         address indexed propertyToken,
@@ -69,10 +62,10 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
     function listProperty(
         address propertyToken,
         uint256 price,
-        bool isGoodwillSale,
+        ListingType _listingType,
         string memory dataURI
     ) external {
-        require(identityManager.isUserVerified(msg.sender), "User not verified");
+        require(identityManager.verifiedUsers(msg.sender), "User not verified");
         require(price > 0, "Invalid price");
         require(!properties[propertyToken].isListed, "Already listed");
         
@@ -86,7 +79,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
             price: price,
             seller: msg.sender,
             isListed: true,
-            isGoodwillSale: isGoodwillSale,
+            listingType: _listingType,
             goodwillBeneficiary: address(0),
             dataURI: dataURI
         });
@@ -95,12 +88,12 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
             propertyToken,
             msg.sender,
             price,
-            isGoodwillSale
+            _listingType
         );
     }
 
     function buyProperty(address propertyToken, uint256 numTokens) external payable nonReentrant {
-        require(identityManager.isUserVerified(msg.sender), "User not verified");
+        require(identityManager.verifiedUsers(msg.sender), "User not verified");
         Property storage property = properties[propertyToken];
         require(property.isListed, "Property not listed");
         require(msg.sender != property.seller, "Cannot buy own property");
@@ -116,7 +109,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         uint256 goodwillAmount = 0;
 
         // Calculate prices for goodwill sale
-        if (property.isGoodwillSale) {
+        if (property.listingType == ListingType.Goodwill) {
             salePrice = (property.price * (100 - GOODWILL_PERCENTAGE)) / 100;
         }
 
@@ -145,7 +138,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         if (token.balanceOf(property.seller) == 0) {
             property.isListed = false; 
         }
-        if (property.isGoodwillSale) {
+        if (property.listingType == ListingType.Goodwill) {
             property.goodwillBeneficiary = property.seller;
         }
 
@@ -172,7 +165,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
 
     // sell function
     function sellTokens(address propertyToken, uint256 numTokens) external payable nonReentrant {
-        require(identityManager.isUserVerified(msg.sender), "User not verified");
+        require(identityManager.verifiedUsers(msg.sender), "User not verified");
         Property storage property = properties[propertyToken];
         require(property.isListed, "Property not listed");
 
@@ -187,7 +180,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         uint256 salePrice = fullTotalPrice;
         uint256 goodwillAmount = 0;
 
-        if (property.isGoodwillSale) {
+        if (property.listingType == ListingType.Goodwill) {
             salePrice = (fullTotalPrice * (100 - GOODWILL_PERCENTAGE)) / 100;
         }
 
@@ -212,7 +205,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         }
 
 
-        if (property.isGoodwillSale) {
+        if (property.listingType == ListingType.Goodwill) {
             property.goodwillBeneficiary = seller;
         } else {
             property.goodwillBeneficiary = address(0);
@@ -228,3 +221,4 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         );
     }
 }
+
