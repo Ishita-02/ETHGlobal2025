@@ -3,13 +3,43 @@
 import Link from "next/link";
 import MacbookScroll from "@/components/ui/macbook-scroll";
 import hot from "@/assets/hot.jpeg";
+import useProductionWallet from "./hooks/useProductionWallet";
+import { useEffect, useState } from "react";
 
 
 export default function Home() {
+  const [walletAddress, setWalletAddress] = useState("");
+  const {account, isConnected, isLoading, displayAddress, canTransact} = useProductionWallet();
 
+  useEffect(() => {
+    if (isConnected && displayAddress) {
+      setWalletAddress(displayAddress);
+    } else {
+      setWalletAddress("");
+    }
+  }, [isConnected, displayAddress]);
+
+  
   return (
   
     <div>
+      {/* Contract Test Component - Remove after testing */}
+      {/* <div className="mb-8">
+        <ContractTestComponent />
+      </div> */}
+      
+      {/* Wallet Address Display */}
+      {isConnected && walletAddress && (
+        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg max-w-4xl mx-auto">
+          <div className="flex items-center justify-center space-x-2">
+            <span className="text-green-600 font-medium">Connected Wallet:</span>
+            <span className="font-mono text-green-800 bg-green-100 px-2 py-1 rounded">
+              {walletAddress}
+            </span>
+          </div>
+        </div>
+      )}
+      
      <div>
       <div className="animate-stamp mt-5">
         <div className="flex justify-center">

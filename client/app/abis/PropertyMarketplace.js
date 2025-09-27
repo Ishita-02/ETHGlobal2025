@@ -398,6 +398,11 @@ const propertyMarketplaceABI =  [
           "internalType": "bool",
           "name": "hasGoodwillHistory",
           "type": "bool"
+        },
+        {
+          "internalType": "string",
+          "name": "imageURI",
+          "type": "string"
         }
       ],
       "stateMutability": "view",
@@ -413,6 +418,11 @@ const propertyMarketplaceABI =  [
         {
           "internalType": "string",
           "name": "dataURI",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "imageURI",
           "type": "string"
         }
       ],

@@ -5,14 +5,14 @@ const Web3 = new Web3Service();
 export const POST = async (req) => {
     try {
         const body = await req.json();
-        const { propertyToken, pricePerToken, numTokens, saleType } = body;
+        const { offerId, newPrice } = body;
 
         // Validate required parameters
-        if (!propertyToken || !pricePerToken || !numTokens || !saleType) {
+        if (!offerId || !newPrice) {
             return new Response(JSON.stringify({
                 success: false,
                 error: "Missing required parameters",
-                required: ["propertyToken", "pricePerToken", "numTokens", "saleType"],
+                required: ["offerId", "newPrice"],
                 timestamp: new Date().toISOString()
             }), {
                 status: 400,
@@ -23,18 +23,16 @@ export const POST = async (req) => {
         // Initialize Web3 service
         await Web3.init();
 
-        // Create sell offer
-        const txHash = await Web3.createSellOffer(propertyToken, pricePerToken, numTokens, saleType);
+        // Update offer price
+        const txHash = await Web3.updateOfferPrice(offerId, newPrice);
 
         return new Response(JSON.stringify({
             success: true,
             data: {
                 transactionHash: txHash,
-                propertyToken,
-                pricePerToken,
-                numTokens,
-                saleType,
-                message: "Sell offer created successfully"
+                offerId,
+                newPrice,
+                message: "Offer price updated successfully"
             },
             timestamp: new Date().toISOString()
         }), {
@@ -43,10 +41,10 @@ export const POST = async (req) => {
         });
 
     } catch (error) {
-        console.error("SellToken API Error:", error);
+        console.error("UpdateOffer API Error:", error);
         return new Response(JSON.stringify({
             success: false,
-            error: "Failed to create sell offer",
+            error: "Failed to update offer price",
             message: error.message,
             timestamp: new Date().toISOString()
         }), {

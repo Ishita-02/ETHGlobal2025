@@ -6,6 +6,7 @@ import "./globals.css";
 
 // Import the new Client Component
 import ClientWrapper from "@/components/ClientWrapper"; // Adjust path as necessary
+import ProductionWalletProvider from "@/components/providers/ProductionWalletProvider";
 
 
 export const metadata = {
@@ -31,10 +32,13 @@ export default function RootLayout({ children }) {
             or it should also be a client component if it interacts with mobileNav state. */}
         <Nav /> 
         
-        {/* Pass children to the ClientWrapper */}
-        <ClientWrapper>
-            {children}
-        </ClientWrapper>
+        {/* Production-safe Wallet Provider for global wallet state */}
+        <ProductionWalletProvider>
+          {/* Pass children to the ClientWrapper */}
+          <ClientWrapper>
+              {children}
+          </ClientWrapper>
+        </ProductionWalletProvider>
         
       </body>
     </html>
