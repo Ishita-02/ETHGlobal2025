@@ -20,8 +20,8 @@ const Nav = () => {
                 <div className="flex space-x-8 text-gray-500 md:inline hidden">
                     <Link href="/marketplace" className="hover:text-orange-500">MarketPlace</Link>
                     <Link href="/qr" className="hover:text-orange-500">self/qr</Link>
-                    <Link href="/about" className="hover:text-orange-500">Something</Link>
-                    <Link href="/profile" className="hover:text-orange-500">Something</Link>
+                    <Link href="/sell" className="hover:text-orange-500">Listing </Link>
+                    <Link href="/portfolio" className="hover:text-orange-500">Portfolio</Link>
                 </div>
 
                 <div className="md:hidden inline">
