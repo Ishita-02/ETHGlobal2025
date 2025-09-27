@@ -5,6 +5,7 @@ import prop from "@/assets/hot.jpeg";
 import { DirectionAwareHover } from "@/components/ui/direction-aware-hover";
 import React, { useState, useMemo } from 'react';
 
+
 // --- START: MarketCard Component Definition ---
 const MarketCard = ({ title, minBuyingPrice, restriction, imageUrl, marketType, DirectionAwareHoverComponent }) => {
     const restrictionColor = restriction === 'indian_only' 

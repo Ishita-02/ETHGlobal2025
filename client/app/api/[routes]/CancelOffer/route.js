@@ -5,14 +5,13 @@ const Web3 = new Web3Service();
 export const POST = async (req) => {
     try {
         const body = await req.json();
-        const { propertyToken, pricePerToken, numTokens, saleType } = body;
+        const { offerId } = body;
 
         // Validate required parameters
-        if (!propertyToken || !pricePerToken || !numTokens || !saleType) {
+        if (!offerId) {
             return new Response(JSON.stringify({
                 success: false,
-                error: "Missing required parameters",
-                required: ["propertyToken", "pricePerToken", "numTokens", "saleType"],
+                error: "Missing required parameter: offerId",
                 timestamp: new Date().toISOString()
             }), {
                 status: 400,
@@ -23,18 +22,15 @@ export const POST = async (req) => {
         // Initialize Web3 service
         await Web3.init();
 
-        // Create sell offer
-        const txHash = await Web3.createSellOffer(propertyToken, pricePerToken, numTokens, saleType);
+        // Cancel sell offer
+        const txHash = await Web3.cancelSellOffer(offerId);
 
         return new Response(JSON.stringify({
             success: true,
             data: {
                 transactionHash: txHash,
-                propertyToken,
-                pricePerToken,
-                numTokens,
-                saleType,
-                message: "Sell offer created successfully"
+                offerId,
+                message: "Sell offer cancelled successfully"
             },
             timestamp: new Date().toISOString()
         }), {
@@ -43,10 +39,10 @@ export const POST = async (req) => {
         });
 
     } catch (error) {
-        console.error("SellToken API Error:", error);
+        console.error("CancelOffer API Error:", error);
         return new Response(JSON.stringify({
             success: false,
-            error: "Failed to create sell offer",
+            error: "Failed to cancel offer",
             message: error.message,
             timestamp: new Date().toISOString()
         }), {
