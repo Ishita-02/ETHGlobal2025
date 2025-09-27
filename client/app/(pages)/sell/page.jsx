@@ -316,7 +316,7 @@ const ListingFormUI = () => {
                     )}
                     {/* Submit Button */}
                     <div className="pt-5">
-                        <button type="submit" disabled={!web3Service || uploadingImages || uploadingDocs || isDeploying} className="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <button type="submit" disabled={!Web3Service || uploadingImages || uploadingDocs || isDeploying} className="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                             {isDeploying ? `${deploymentStep}` : uploadingImages || uploadingDocs ? 'Uploading Files to IPFS...' : 'Deploy & List Asset'}
                         </button>
                     </div>
