@@ -1,7 +1,6 @@
 {
-  "identityManager": "0x4d30caAf87881Ef83089D722183E50F654Fac716",
-  "propertyToken": "0x10994F96406Cf82C234cc862d6f5E255DC9a2B5F",
-  "marketplace": "0xEf2D874D88ff0ff397E6Ff88d173DD8f9874Ff4a",
-  "network": "sepolia_testnet",
-  "timestamp": "2025-09-26T23:15:25.653Z"
+  "identityManager": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "marketplace": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  "network": "hardhat",
+  "timestamp": "2025-09-27T00:22:39.107Z"
 }

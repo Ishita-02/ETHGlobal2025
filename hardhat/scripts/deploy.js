@@ -40,7 +40,6 @@ async function main() {
     // Save deployment addresses
     const deployments = {
       identityManager: identityManagerAddress,
-      propertyToken: propertyTokenAddress,
       marketplace: marketplaceAddress,
       network: network.name,
       timestamp: new Date().toISOString()
@@ -54,7 +53,6 @@ async function main() {
     console.log("\nDeployment Summary:");
     console.log("-------------------");
     console.log("IdentityManager:", identityManagerAddress);
-    console.log("PropertyToken:", propertyTokenAddress);
     console.log("Marketplace:", marketplaceAddress);
 
   } catch (error) {
