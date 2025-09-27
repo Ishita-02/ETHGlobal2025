@@ -45,11 +45,20 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
         bool isGoodwillSale
     );
     
-    event PropertySold(
+    // event PropertySold(
+    //     address indexed propertyToken,
+    //     address indexed seller,
+    //     address indexed buyer,
+    //     uint256 price,
+    //     uint256 goodwillAmount
+    // );
+
+    event TokensBought (
         address indexed propertyToken,
         address indexed seller,
         address indexed buyer,
-        uint256 price,
+        uint256 numTokens,
+        uint256 totalPrice,
         uint256 goodwillAmount
     );
 
@@ -140,13 +149,7 @@ contract PropertyMarketplace is Ownable, ReentrancyGuard {
             property.goodwillBeneficiary = property.seller;
         }
 
-        emit PropertySold(
-            propertyToken,
-            property.seller,
-            msg.sender,
-            salePrice,
-            goodwillAmount
-        );
+       
     }
 
     function cancelListing(address propertyToken) external {
