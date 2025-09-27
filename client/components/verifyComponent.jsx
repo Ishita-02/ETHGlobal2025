@@ -1,32 +1,30 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { countries, SelfQRcodeWrapper } from '@selfxyz/qrcode';
-import { SelfAppBuilder } from '@selfxyz/qrcode';
+import { countries, SelfQRcodeWrapper, SelfAppBuilder } from '@selfxyz/qrcode';
 
 export default function VerifyComponent() {
   const [selfApp, setSelfApp] = useState(null);
 
   useEffect(() => {
-    const userId = '0xDC984157F54F2e186cb6E9082bb998CbE7C44c23'; // Replace with actual address
+    const userId = '0xbc40Cf83d17c3D378B56EDec901b603D1eBCe4E8'; // Replace with actual address
     
     const app = new SelfAppBuilder({
       version: 2,
-      appName: process.env.NEXT_PUBLIC_SELF_APP_NAME || 'Self Docs',
-      scope: process.env.NEXT_PUBLIC_SELF_SCOPE || 'self-docs',
-      endpoint: `${process.env.NEXT_PUBLIC_SELF_ENDPOINT}`,
+      appName: 'Novilized Real Estate', 
+      scope: 'novilized',
+      endpoint: 'https://59013b970854.ngrok-free.app/api/verify', // Your ngrok backend endpoint
       logoBase64: 'https://i.postimg.cc/mrmVf9hm/self.png',
       userId,
-      endpointType: 'staging_celo',
-      userIdType: 'hex',
-      userDefinedData: 'Hello from the Docs!!',
+      endpointType: 'staging_https',
+      userIdType: 'hex',  
+      userDefinedData: 'Real Estate Verification',
+      disableWebSocket: true,
+      connectionType: 'deeplink',
       disclosures: {
         minimumAge: 18,
         excludedCountries: [
-          countries.CUBA, 
           countries.IRAN, 
-          countries.NORTH_KOREA, 
-          countries.RUSSIA
         ],
         nationality: true,
         gender: true,
@@ -45,8 +43,11 @@ export default function VerifyComponent() {
       {selfApp ? (
         <SelfQRcodeWrapper
           selfApp={selfApp}
+          type="deeplink"
+          disableWebSocket={true}
           onSuccess={handleSuccessfulVerification}
-          onError={() => {
+          onError={(error) => {
+            console.error('Error: ', error);
             console.error('Error: Failed to verify identity');
           }}
         />
