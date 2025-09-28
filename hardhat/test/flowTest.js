@@ -212,12 +212,12 @@ describe("Basic Goodwill Payment Flow", function () {
     console.log("-".repeat(40));
 
     propertyToken = await PropertyTokenFactory.connect(user1).deploy(
-      "Beachside Villa",                    // name
-      "BV",                                // symbol
-      "456 Ocean Drive, Miami",            // location
-      ethers.parseEther("10"),             // price per token (10 ETH)
-      user1.address,                       // owner
-      await identityManager.getAddress()   // identity manager
+      "Beachside Villa",                    
+      "BV",                              
+      "456 Ocean Drive, Miami",           
+      ethers.parseEther("10"),             
+      user1.address,                      
+      await identityManager.getAddress()  
     );
     await propertyToken.waitForDeployment();
     const propertyTokenAddress = await propertyToken.getAddress();
@@ -233,7 +233,8 @@ describe("Basic Goodwill Payment Flow", function () {
     // Register property in marketplace
     await marketplace.connect(user1).registerProperty(
       propertyTokenAddress,
-      "ipfs://QmPropertyMetadataHash123"
+      "ipfs://QmPropertyMetadataHash123",
+      "ipfs://QmaPROPERTYIMAGEURI"
     );
     console.log("📋 Property registered in marketplace");
 

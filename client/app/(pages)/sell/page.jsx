@@ -1,14 +1,15 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-// Import your Web3Service
-import Web3Service from '../../../components/services/Web3Service'; // Corrected import path
+import useWalletStore from '@/zustand/walletStore';
 
 // Configuration
 const LIGHTHOUSE_API_KEY = "b0803b0e.274cba019764496698835b7b9a3e2c49";
 const NUM_TOKENS = 100000;
 
 const ListingFormUI = () => {
+    const { isConnected, web3Service, account, initWeb3Service } = useWalletStore();
+
     const [formData, setFormData] = useState({
         propertyTitle: '',
         streetAddress: '',
@@ -23,7 +24,11 @@ const ListingFormUI = () => {
     const [isDeploying, setIsDeploying] = useState(false);
     const [deploymentStep, setDeploymentStep] = useState('');
     
-
+    // Initialize Web3Service on component mount if wallet is connected
+    useEffect(() => {
+        if (isConnected && !web3Service) {
+        }
+    }, [isConnected, web3Service, initWeb3Service]);
 
     // Upload JSON metadata to IPFS
     const uploadMetadataToIPFS = async (propertyData) => {
@@ -114,13 +119,30 @@ const ListingFormUI = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        
+        // Validation checks
+        if (!isConnected) {
+            alert('Please connect your wallet first using the button in the navigation bar.');
+            return;
+        }
+        
+        if (!web3Service) {
+            alert('Web3 service is not initialized. Please try reconnecting your wallet.');
+            return;
+        }
+        
         if (uploadedImages.length === 0) {
             alert('Please upload at least one property image');
             return;
         }
+        
         if (uploadedDocs.length === 0) {
             alert('Please upload at least one property document');
+            return;
+        }
+
+        if (!formData.minimumPrice || parseFloat(formData.minimumPrice) <= 0) {
+            alert('Please enter a valid minimum price');
             return;
         }
 
@@ -134,7 +156,7 @@ const ListingFormUI = () => {
 
             // Step 2: Deploy Property Token Contract using the service
             setDeploymentStep('Deploying Property Token Contract...');
-            const propertyTokenAddress = await Web3Service.deployPropertyToken({
+            const propertyTokenAddress = await web3Service.deployPropertyToken({
                 name: formData.propertyTitle,
                 symbol: formData.propertyTitle.replace(/\s+/g, '').toUpperCase().substring(0, 6),
                 location: formData.streetAddress,
@@ -143,12 +165,12 @@ const ListingFormUI = () => {
 
             // Step 3: Register Property using the service
             setDeploymentStep('Registering property in marketplace...');
-            const registerTxHash = await Web3Service.registerProperty(propertyTokenAddress, dataURI, imageURI);
+            const registerTxHash = await web3Service.registerProperty(propertyTokenAddress, dataURI, imageURI);
 
             // Step 4: Create Sell Offer using the service
             setDeploymentStep('Creating sell offer...');
             const saleType = formData.marketType === 'goodwill' ? 1 : 0;
-            const sellOfferTxHash = await Web3Service.createSellOffer(propertyTokenAddress, formData.minimumPrice, NUM_TOKENS, saleType);
+            const sellOfferTxHash = await web3Service.createSellOffer(propertyTokenAddress, formData.minimumPrice, NUM_TOKENS, saleType);
 
             setDeploymentStep('Complete!');
             const finalData = {
@@ -180,7 +202,7 @@ const ListingFormUI = () => {
     };
 
     const FileList = ({ files, type }) => (
-      <div className="mt-4 space-y-2">
+        <div className="mt-4 space-y-2">
             {files.map((file, index) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center space-x-3">
@@ -191,7 +213,7 @@ const ListingFormUI = () => {
                             <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
                             <p className="text-xs text-gray-500">
                                 {(file.size / 1024 / 1024).toFixed(2)} MB •
-                                 <a href={file.url} target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:text-orange-500 ml-1">
+                                <a href={file.url} target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:text-orange-500 ml-1">
                                     View on IPFS
                                 </a>
                             </p>
@@ -206,13 +228,34 @@ const ListingFormUI = () => {
         </div>
     );
 
+    // Check if form is ready for submission
+    const isFormReady = isConnected && web3Service && !uploadingImages && !uploadingDocs && !isDeploying;
+
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-8">
             <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-xl">
                 <div className="p-6 md:p-8 border-b-4 border-orange-600 rounded-t-xl bg-white">
                     <h1 className="text-3xl font-bold text-gray-900 mb-1">Create New Listing</h1>
                     <p className="text-lg text-gray-500">Sell your real estate asset on the Novilized platform with IPFS storage.</p>
+                    
+                    {/* Connection Status */}
+                    <div className="mt-4">
+                        {!isConnected ? (
+                            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                <p className="text-sm text-yellow-700">⚠️ Please connect your wallet to list a property</p>
+                            </div>
+                        ) : !web3Service ? (
+                            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+                                <p className="text-sm text-orange-700">🔄 Initializing Web3 service...</p>
+                            </div>
+                        ) : (
+                            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                                <p className="text-sm text-green-700">✅ Wallet connected and Web3 service ready</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
+                
                 <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-8">
                     {/* Asset Information Section */}
                     <div className="space-y-6">
@@ -228,6 +271,7 @@ const ListingFormUI = () => {
                             </div>
                         </div>
                     </div>
+                    
                     {/* Media Upload Section */}
                     <div className="space-y-6">
                         <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">Property Images <span className="text-sm font-normal text-gray-500 ml-2">(Stored on IPFS via Lighthouse)</span></h2>
@@ -241,13 +285,19 @@ const ListingFormUI = () => {
                                 <span className="pl-1">or drag and drop</span>
                             </p>
                             <p className="text-xs text-gray-500">PNG, JPG, up to 10MB each</p>
-                            {uploadingImages && (<div className="mt-4"><div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600 mx-auto"></div><p className="text-sm text-gray-500 mt-2">Uploading to IPFS network...</p></div>)}
+                            {uploadingImages && (
+                                <div className="mt-4">
+                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600 mx-auto"></div>
+                                    <p className="text-sm text-gray-500 mt-2">Uploading to IPFS network...</p>
+                                </div>
+                            )}
                         </div>
                         {uploadedImages.length > 0 && (<FileList files={uploadedImages} type="image" />)}
                     </div>
+                    
                     {/* Documents Upload Section */}
                     <div className="space-y-6">
-                         <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">Property Documents <span className="text-sm font-normal text-gray-500 ml-2">(Stored on IPFS via Lighthouse)</span></h2>
+                        <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">Property Documents <span className="text-sm font-normal text-gray-500 ml-2">(Stored on IPFS via Lighthouse)</span></h2>
                         <div className="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center hover:border-orange-500 transition duration-150">
                             <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H15m4-19l12 12m-12 0l-12-12m12 12l-12-12" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                             <p className="mt-2 text-sm text-gray-600">
@@ -258,10 +308,16 @@ const ListingFormUI = () => {
                                 <span className="pl-1">or drag and drop</span>
                             </p>
                             <p className="text-xs text-gray-500">PDF, DOC, TXT, up to 10MB each</p>
-                            {uploadingDocs && (<div className="mt-4"><div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600 mx-auto"></div><p className="text-sm text-gray-500 mt-2">Uploading to IPFS network...</p></div>)}
+                            {uploadingDocs && (
+                                <div className="mt-4">
+                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600 mx-auto"></div>
+                                    <p className="text-sm text-gray-500 mt-2">Uploading to IPFS network...</p>
+                                </div>
+                            )}
                         </div>
                         {uploadedDocs.length > 0 && (<FileList files={uploadedDocs} type="document" />)}
                     </div>
+                    
                     {/* Pricing and Market Settings Section */}
                     <div className="space-y-6">
                         <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">Pricing & Market Settings</h2>
@@ -283,7 +339,8 @@ const ListingFormUI = () => {
                             </div>
                         </div>
                     </div>
-                    {/* Summary and Progress Sections ... */}
+                    
+                    {/* Summary Section */}
                     {(uploadedImages.length > 0 || uploadedDocs.length > 0) && (
                         <div className="space-y-6">
                             <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">IPFS Storage Summary</h2>
@@ -300,6 +357,8 @@ const ListingFormUI = () => {
                             </div>
                         </div>
                     )}
+                    
+                    {/* Deployment Progress */}
                     {isDeploying && (
                         <div className="space-y-6">
                             <h2 className="text-xl font-semibold text-gray-800 border-b pb-2">Deployment Progress</h2>
@@ -314,11 +373,17 @@ const ListingFormUI = () => {
                             </div>
                         </div>
                     )}
+                    
                     {/* Submit Button */}
                     <div className="pt-5">
-                        <button type="submit" disabled={!Web3Service || uploadingImages || uploadingDocs || isDeploying} className="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
-                            {isDeploying ? `${deploymentStep}` : uploadingImages || uploadingDocs ? 'Uploading Files to IPFS...' : 'Deploy & List Asset'}
+                        <button type="submit" disabled={!isFormReady} className="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                            {isDeploying ? deploymentStep : uploadingImages || uploadingDocs ? 'Uploading Files to IPFS...' : 'Deploy & List Asset'}
                         </button>
+                        {!isFormReady && !isDeploying && (
+                            <p className="text-xs text-gray-500 mt-2 text-center">
+                                {!isConnected ? 'Connect wallet to continue' : !web3Service ? 'Initializing Web3 service...' : 'Complete all fields to proceed'}
+                            </p>
+                        )}
                     </div>
                 </form>
             </div>
@@ -327,4 +392,3 @@ const ListingFormUI = () => {
 };
 
 export default ListingFormUI;
-
